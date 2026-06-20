@@ -65,7 +65,7 @@ jobs:
 
       - name: Clone and build frontend
         run: |
-          git clone https://github.com/komari-monitor/komari-web komari-web
+          git clone --branch custom/ddns-ui --depth 1 https://github.com/wd0130/komari-web komari-web
           cd komari-web
           npm install
           npm run build
@@ -83,7 +83,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.23"
+          go-version: "1.25"
 
       - name: Install Zig cross-compiler toolchain
         run: |
