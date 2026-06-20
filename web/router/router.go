@@ -213,6 +213,20 @@ func registerAdminRoutes(r *gin.Engine) {
 		}
 	}
 
+	// DDNS
+	ddnsGroup := g.Group("/ddns")
+	{
+		ddnsGroup.GET("/provider", jsonRpc.Bind("admin:getDDNSProvider", jsonRpc.WithQuery("provider")))
+		ddnsGroup.POST("/provider", jsonRpc.Bind("admin:setDDNSProvider"))
+		ddnsGroup.POST("/provider/remove-token", jsonRpc.Bind("admin:removeDDNSToken"))
+		ddnsGroup.GET("/", jsonRpc.Bind("admin:listDDNSRecords"))
+		ddnsGroup.POST("/record", jsonRpc.Bind("admin:saveDDNSRecord"))
+		ddnsGroup.POST("/record/delete", jsonRpc.Bind("admin:deleteDDNSRecords"))
+		ddnsGroup.POST("/record/enable", jsonRpc.Bind("admin:enableDDNSRecords"))
+		ddnsGroup.POST("/record/disable", jsonRpc.Bind("admin:disableDDNSRecords"))
+		ddnsGroup.POST("/sync", jsonRpc.Bind("admin:syncDDNSRecords"))
+	}
+
 	// ping tasks
 	pingTask := g.Group("/ping")
 	{

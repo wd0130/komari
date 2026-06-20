@@ -19,6 +19,7 @@ import (
 	"github.com/komari-monitor/komari/database/accounts"
 	"github.com/komari-monitor/komari/database/auditlog"
 	"github.com/komari-monitor/komari/database/dbcore"
+	d_ddns "github.com/komari-monitor/komari/database/ddns"
 	"github.com/komari-monitor/komari/database/models"
 	d_notification "github.com/komari-monitor/komari/database/notification"
 	"github.com/komari-monitor/komari/database/records"
@@ -200,6 +201,13 @@ func DoScheduledWork() {
 	}
 	if err := corn.AddFunc("notifier:expire", "0 0 9 * * *", notifier.CheckExpireScheduledWork); err != nil {
 		log.Println("Failed to add expire notification scheduled task:", err)
+	}
+	if err := corn.AddContextFunc("ddns:sync", "@every 2m", true, func(ctx context.Context) {
+		if _, err := d_ddns.SyncAll(ctx); err != nil {
+			log.Println("Failed to sync DDNS records:", err)
+		}
+	}); err != nil {
+		log.Println("Failed to add DDNS sync scheduled task:", err)
 	}
 	notifier.InitTrafficReportSchedule()
 }
